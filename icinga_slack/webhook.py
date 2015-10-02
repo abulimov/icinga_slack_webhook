@@ -7,7 +7,10 @@ import sys
 
 from icinga_slack import __version__
 
-alert_colors = {'UNKNOWN': '#6600CC',
+alert_colors = {'UP': '#36A64F',
+                'DOWN': '#FF0000',
+                'UNREACHABLE': '#FF9900',
+                'UNKNOWN': '#6600CC',
                 'CRITICAL': '#FF0000',
                 'WARNING': '#FF9900',
                 'OK': '#36A64F'}
@@ -46,7 +49,7 @@ class AttachmentList(list):
 
 class Message(dict):
     def __init__(self, channel, text, username, mrkdwn_in=["fields"],
-                 icon_emoji=":ghost:", attachments=None):
+                 icon_emoji=":bangbang:", attachments=None):
         self['channel'] = channel
         self['text'] = text
         if mrkdwn_in:
@@ -88,13 +91,13 @@ def parse_options():
     parser.add_argument('-c', metavar="CHANNEL", type=str, required=True, help="The channel to send the message to")
     parser.add_argument('-m', metavar="MESSAGE", type=str, required=True, help="The text of the message to send")
     parser.add_argument('-u', metavar="WEBHOOKURL", type=str, required=True, help="The webhook URL for your integration")
-    parser.add_argument('-A', metavar="SERVICEACTIONURL", type=str, default=None, help="An optional action_url for this alert {default: None}")
+    parser.add_argument('-A', metavar="ACTIONURL", type=str, default=None, help="An optional action_url for this alert {default: None}")
     parser.add_argument('-H', metavar="HOST", type=str, default="UNKNOWN", help="An optional host the message relates to {default: UNKNOWN}")
     parser.add_argument('-L', metavar="LEVEL", type=str, choices=["OK", "WARNING", "CRITICAL", "UNKNOWN"], default="UNKNOWN",
                         help="An optional alert level {default: UNKNOWN}")
     parser.add_argument('-M', metavar="HEADERMESSAGE", type=str, default="I have received the following alert:",
                         help="A header message sent before the formatted alert {default: I have received the following alert:}")
-    parser.add_argument('-N', metavar="SERVICENOTESURL", type=str, default=None, help="An optional notes_url for this alert {default: None}")
+    parser.add_argument('-N', metavar="NOTESURL", type=str, default=None, help="An optional notes_url for this alert {default: None}")
     parser.add_argument('-S', metavar="STATUSCGIURL", type=str, default='https://nagios.example.com/cgi-bin/icinga/status.cgi',
                         help="The URL of status.cgi for your Nagios/Icinga instance {default: https://nagios.example.com/cgi-bin/icinga/status.cgi}")
     parser.add_argument('-U', metavar="USERNAME", type=str, default="Icinga", help="Username to send the message from {default: Icinga}")
